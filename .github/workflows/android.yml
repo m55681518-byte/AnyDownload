@@ -47,14 +47,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG=${GITHUB_REF_NAME}
+          cat > /tmp/notes.md << EOF
+          AnyDownload release $TAG
+
+          Download the APK for your phone and install it (allow install from unknown sources when asked).
+
+          - arm64-v8a: all modern phones (2017+, Samsung/Galaxy, Pixel, Xiaomi, OnePlus, etc.)
+          - universal: everything else
+
+          Install guide: see README.
+          EOF
           gh release create "$TAG" dist/*.apk \
             --repo "$GITHUB_REPOSITORY" \
             --title "AnyDownload $TAG" \
-            --notes "AnyDownload release $TAG
-
-Download the APK for your phone and install it (allow 'install from unknown sources' when asked).
-
-- **arm64-v8a**: all modern phones (2017+, Samsung/Galaxy, Pixel, Xiaomi, OnePlus, etc.)
-- **universal**: everything else
-
-Install guide: see README." || true
+            --notes-file /tmp/notes.md || true
